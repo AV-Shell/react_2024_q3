@@ -1,0 +1,42 @@
+article {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid black;
+
+
+  .field {
+    display: flex;
+    justify-content: flex-start;
+    align-items: baseline;
+    gap: 8px;
+
+
+    .title {
+      font-size: 12px;
+      color: #535353
+    }
+
+    .description {
+      font-size: 20px;
+      color: #000000
+    }
+  }
+
+  .other {
+    display: flex;
+    justify-content: flex-start;
+    align-items: baseline;
+    gap: 4px 16px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+
+    .title {
+      font-size: 10px;
+    }
+
+    .description {
+      font-size: 16px;
+    }
+  }
+}
