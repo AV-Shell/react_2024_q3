@@ -1,18 +1,20 @@
 import { ReactNode, useCallback, useEffect, useState } from 'react';
 import './App.css';
-import { storage } from './services/localstorage.service';
+// import { storage } from './services/localstorage.service';
 import { Loader } from './components/Loader/Loader';
 import { IAPIResp } from './models/api';
 import { ErrorButton } from './components/ErrorButton/ErrorButton';
 import { PersonCardsList } from './components/PersonCardsList/PersonCardsList';
 import { SearchPanel } from './components/SearchPanel/SearchPanel';
+import { useLocalStorage } from './hooks/useLocalStorage';
 
 const SEARCH_STRING: string = 'search';
 const SEARCH_LINK: string = 'https://swapi.dev/api/people';
 
 function App(): ReactNode {
-  const [searchString, setSearchString] = useState(storage.getItem<string>(SEARCH_STRING) ?? '');
-  const [requestString, setRequestString] = useState('');
+  const [requestString, setRequestString] = useLocalStorage('', SEARCH_STRING);
+  const [searchString, setSearchString] = useState(requestString);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [searchResult, setSearchResult] = useState<IAPIResp>({
@@ -22,7 +24,7 @@ function App(): ReactNode {
     results: [],
   });
 
-  function setErrorData(data: string | number, searchString: string) {
+  function setErrorData(data: string | number) {
     setError(typeof data === 'string' ? data : `Network error, status core: ${data}`);
     setSearchResult({
       count: 0,
@@ -30,7 +32,6 @@ function App(): ReactNode {
       previous: null,
       results: [],
     });
-    setRequestString(searchString);
   }
 
   const fetchData = useCallback(
@@ -43,7 +44,7 @@ function App(): ReactNode {
       const link = `${SEARCH_LINK}${trimmedSearchString ? `/?search=${trimmedSearchString}` : ''}`;
       try {
         setLoading(true);
-
+        setRequestString(searchString);
         const data: IAPIResp | string | number = await fetch(link).then(
           (data: Response): Promise<IAPIResp | string | number> => {
             if (!data.ok) {
@@ -54,19 +55,18 @@ function App(): ReactNode {
           },
         );
         if (typeof data === 'string' || typeof data === 'number') {
-          setErrorData(data, searchString);
+          setErrorData(data);
         } else {
           setSearchResult(data);
           setError(null);
-          setRequestString(searchString);
         }
       } catch (error) {
-        setErrorData(error instanceof Error ? error.message : 'Unknown error', searchString);
+        setErrorData(error instanceof Error ? error.message : 'Unknown error');
       } finally {
         setLoading(false);
       }
     },
-    [requestString, setLoading, setError, setSearchResult, setRequestString],
+    [requestString, setRequestString],
   );
 
   const handleChange = useCallback(
@@ -90,7 +90,7 @@ function App(): ReactNode {
 
       setSearchString(search);
       fetchData(search);
-      storage.setItem(SEARCH_STRING, search);
+      // storage.setItem(SEARCH_STRING, search);
     },
     [setSearchString, fetchData],
   );
