@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import './SearchPanel.css';
 
 interface IProps {
   onSubmit: (e: React.SyntheticEvent) => void;

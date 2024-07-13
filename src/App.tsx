@@ -7,22 +7,34 @@ import { ErrorButton } from './components/ErrorButton/ErrorButton';
 import { PersonCardsList } from './components/PersonCardsList/PersonCardsList';
 import { SearchPanel } from './components/SearchPanel/SearchPanel';
 import { useLocalStorage } from './hooks/useLocalStorage';
+import { Pagination } from './components/Pagination/Pagination';
+import { Outlet, useNavigate, useSearchParams } from 'react-router-dom';
+import { SEARCH_LINK, SEARCH_STRING } from './utils/const';
 
-const SEARCH_STRING: string = 'search';
-const SEARCH_LINK: string = 'https://swapi.dev/api/people';
+interface IFetchData {
+  searchString: string;
+  forse?: boolean;
+  page?: number;
+}
 
 function App(): ReactNode {
-  const [requestString, setRequestString] = useLocalStorage('', SEARCH_STRING);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [requestString, setRequestString] = useLocalStorage(searchParams.get(SEARCH_STRING) ?? '', SEARCH_STRING);
   const [searchString, setSearchString] = useState(requestString);
+  const page: number = +(searchParams.get(`page`) ?? 1);
 
+  const [paginationPage, setPaginationPage] = useState(page);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
   const [searchResult, setSearchResult] = useState<IAPIResp>({
     count: 0,
     next: null,
     previous: null,
     results: [],
   });
+
+  const navigate = useNavigate();
 
   function setErrorData(data: string | number) {
     setError(typeof data === 'string' ? data : `Network error, status core: ${data}`);
@@ -35,16 +47,20 @@ function App(): ReactNode {
   }
 
   const fetchData = useCallback(
-    async (searchString: string, forse: boolean = false): Promise<void> => {
+    async ({ searchString, forse = false, page }: IFetchData): Promise<void> => {
       const trimmedSearchString = searchString.trim();
       if (requestString === trimmedSearchString && !forse) {
         return;
       }
 
-      const link = `${SEARCH_LINK}${trimmedSearchString ? `/?search=${trimmedSearchString}` : ''}`;
+      const queryPage = page ? `page=${page}` : '';
+      const searchParamsString = trimmedSearchString ? `search=${trimmedSearchString}` : '';
+      const paramString = [searchParamsString, queryPage].filter(x => x).join('&');
+      const link = `${SEARCH_LINK}${paramString ? `/?${paramString}` : ''}`;
+
       try {
         setLoading(true);
-        setRequestString(searchString);
+        setRequestString(trimmedSearchString);
         const data: IAPIResp | string | number = await fetch(link).then(
           (data: Response): Promise<IAPIResp | string | number> => {
             if (!data.ok) {
@@ -64,9 +80,21 @@ function App(): ReactNode {
         setErrorData(error instanceof Error ? error.message : 'Unknown error');
       } finally {
         setLoading(false);
+        setSearchParams({
+          page: `${page ? page : 1}`,
+          ...(trimmedSearchString ? { [SEARCH_STRING]: trimmedSearchString } : {}),
+        });
       }
     },
-    [requestString, setRequestString],
+    [requestString, setRequestString, setSearchParams],
+  );
+
+  const handlePageChange = useCallback(
+    (page: number) => {
+      setPaginationPage(page);
+      fetchData({ searchString: requestString, forse: true, page });
+    },
+    [fetchData, setPaginationPage, requestString],
   );
 
   const handleChange = useCallback(
@@ -89,35 +117,55 @@ function App(): ReactNode {
       const search = target.search.value;
 
       setSearchString(search);
-      fetchData(search);
+      fetchData({ searchString: search }).finally(() => setPaginationPage(1));
       // storage.setItem(SEARCH_STRING, search);
     },
-    [setSearchString, fetchData],
+    [setSearchString, fetchData, setPaginationPage],
   );
 
   useEffect(() => {
-    fetchData(searchString, true);
+    const page = searchParams.get(`page`);
+
+    fetchData({ searchString, forse: true, ...(page ? { page: +page } : {}) });
     // eslint-disable-next-line react-compiler/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-    <>
-      <header>
-        <SearchPanel onSubmit={handleSearchSubmit} onChange={handleChange} value={searchString} />
-        <ErrorButton />
-      </header>
-      <main>
-        {loading && <Loader />}
-        {error ? (
-          <>
-            <span>{error}</span>
-          </>
-        ) : (
-          <PersonCardsList results={searchResult.results} />
-        )}
-      </main>
-    </>
+    <div className="page">
+      <div
+        className="leftside"
+        onClick={() => {
+          navigate(`/?page=${page}${requestString ? `&${SEARCH_STRING}=${requestString}` : ''}`);
+        }}>
+        <header>
+          <SearchPanel onSubmit={handleSearchSubmit} onChange={handleChange} value={searchString} />
+          <ErrorButton />
+        </header>
+        <main>
+          {loading && <Loader />}
+          {error ? (
+            <>
+              <span>{error}</span>
+            </>
+          ) : (
+            <>
+              <PersonCardsList results={searchResult.results} />
+              {!loading && (
+                <Pagination
+                  isLoading={loading}
+                  onChange={handlePageChange}
+                  value={paginationPage}
+                  maxPerPage={10}
+                  maxValues={searchResult.count}
+                />
+              )}
+            </>
+          )}
+        </main>
+      </div>
+      <Outlet />
+    </div>
   );
 }
 
