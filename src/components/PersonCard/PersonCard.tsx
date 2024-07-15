@@ -1,18 +1,30 @@
-import { PureComponent, ReactNode } from 'react';
+import { ReactNode } from 'react';
 import './PersonCard.css';
 import { IResult } from '../../models/api';
+import { NavLink, useSearchParams } from 'react-router-dom';
+import { SEARCH_STRING } from '../../utils/const';
 
 interface IProps {
   person: IResult;
-  key: string;
 }
-interface IState {}
 
-export class PersonCard extends PureComponent<IProps, IState> {
-  render(): ReactNode {
-    const { person, key } = this.props;
-    return (
-      <article key={key}>
+export function PersonCard(props: IProps): ReactNode {
+  const { person } = props;
+  const personId: string = person.url.split('/').slice(-2)[0];
+  const [searchParams] = useSearchParams();
+  const page = searchParams.get('page');
+  const search = searchParams.get(SEARCH_STRING);
+
+  function onClick(e: React.SyntheticEvent) {
+    e.stopPropagation();
+  }
+
+  return (
+    <NavLink
+      onClick={onClick}
+      to={`person/${personId}${page ? `?page=${page}` : ''}${search ? `&${SEARCH_STRING}=${search}` : ''}`}
+      className={({ isActive, isPending }) => (isActive ? 'active' : isPending ? 'pending' : '')}>
+      <article>
         <div className="field">
           <span className="title">name: </span>
           <span className="description">{person.name}</span>
@@ -44,6 +56,6 @@ export class PersonCard extends PureComponent<IProps, IState> {
           </div>
         </div>
       </article>
-    );
-  }
+    </NavLink>
+  );
 }
