@@ -6,15 +6,14 @@ import './index.css';
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary.tsx';
 import { PersonPage, PersonPageLoader } from './views/PersonPage/PersonPage.tsx';
 import { NotFoundPage } from './views/404Page/404page.tsx';
+import { Provider } from 'react-redux';
+import { configuredStore } from './store/store.ts';
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <App />,
     errorElement: <NotFoundPage />,
-
-    // loader: rootLoader,
-    // action: rootAction,
     children: [
       {
         path: 'person/:personId',
@@ -27,8 +26,10 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <ErrorBoundary>
-      <RouterProvider router={router} />
-    </ErrorBoundary>
+    <Provider store={configuredStore}>
+      <ErrorBoundary>
+        <RouterProvider router={router} />
+      </ErrorBoundary>
+    </Provider>
   </React.StrictMode>,
 );

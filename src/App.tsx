@@ -1,6 +1,5 @@
 import { ReactNode, useCallback, useEffect, useState } from 'react';
 import './App.css';
-// import { storage } from './services/localstorage.service';
 import { Loader } from './components/Loader/Loader';
 import { IAPIResp } from './models/api';
 import { ErrorButton } from './components/ErrorButton/ErrorButton';
@@ -10,6 +9,7 @@ import { useLocalStorage } from './hooks/useLocalStorage';
 import { Pagination } from './components/Pagination/Pagination';
 import { Outlet, useNavigate, useSearchParams } from 'react-router-dom';
 import { SEARCH_LINK, SEARCH_STRING } from './utils/const';
+import { SelectionPanel } from './components/SelectionPanel/SelectionPanex';
 
 interface IFetchData {
   searchString: string;
@@ -118,7 +118,6 @@ function App(): ReactNode {
 
       setSearchString(search);
       fetchData({ searchString: search }).finally(() => setPaginationPage(1));
-      // storage.setItem(SEARCH_STRING, search);
     },
     [setSearchString, fetchData, setPaginationPage],
   );
@@ -132,40 +131,43 @@ function App(): ReactNode {
   }, []);
 
   return (
-    <div className="page">
-      <div
-        className="leftside"
-        onClick={() => {
-          navigate(`/?page=${page}${requestString ? `&${SEARCH_STRING}=${requestString}` : ''}`);
-        }}>
-        <header>
-          <SearchPanel onSubmit={handleSearchSubmit} onChange={handleChange} value={searchString} />
-          <ErrorButton />
-        </header>
-        <main>
-          {loading && <Loader />}
-          {error ? (
-            <>
-              <span>{error}</span>
-            </>
-          ) : (
-            <>
-              <PersonCardsList results={searchResult.results} />
-              {!loading && (
-                <Pagination
-                  isLoading={loading}
-                  onChange={handlePageChange}
-                  value={paginationPage}
-                  maxPerPage={10}
-                  maxValues={searchResult.count}
-                />
-              )}
-            </>
-          )}
-        </main>
+    <>
+      <div className="page">
+        <div
+          className="leftside"
+          onClick={() => {
+            navigate(`/?page=${page}${requestString ? `&${SEARCH_STRING}=${requestString}` : ''}`);
+          }}>
+          <header>
+            <SearchPanel onSubmit={handleSearchSubmit} onChange={handleChange} value={searchString} />
+            <ErrorButton />
+          </header>
+          <main>
+            {loading && <Loader />}
+            {error ? (
+              <>
+                <span>{error}</span>
+              </>
+            ) : (
+              <>
+                <PersonCardsList results={searchResult.results} />
+                {!loading && (
+                  <Pagination
+                    isLoading={loading}
+                    onChange={handlePageChange}
+                    value={paginationPage}
+                    maxPerPage={10}
+                    maxValues={searchResult.count}
+                  />
+                )}
+              </>
+            )}
+          </main>
+        </div>
+        <Outlet />
       </div>
-      <Outlet />
-    </div>
+      <SelectionPanel />
+    </>
   );
 }
 

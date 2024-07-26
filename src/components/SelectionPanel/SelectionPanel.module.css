@@ -1,0 +1,39 @@
+.container {
+  display: table-row;
+
+
+  .content {
+    box-sizing: border-box;
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+    width: 100%;
+    padding: 0px 20px;
+
+    background-color: chocolate;
+    max-height: 0px;
+    transition: max-height 0.25s linear;
+    transition: padding 0.25s linear;
+
+  }
+
+
+  .fixed {
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+  }
+
+  .fake {
+    pointer-events: none;
+    visibility: hidden;
+    opacity: 0;
+  }
+
+  .visible {
+    max-height: fit-content;
+    /* display: table-cell; */
+    padding: 20px;
+  }
+}
