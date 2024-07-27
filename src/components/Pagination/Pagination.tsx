@@ -1,7 +1,9 @@
 import { useSearchParams } from 'react-router-dom';
 import { useAppSelector } from '../../store/storeHooks';
 import { maxPersonsPerPage } from '../../utils/const';
-import './Pagination.css';
+import s from './Pagination.module.css';
+import { useContext } from 'react';
+import { ThemeContext } from '../../context/context';
 
 interface IBProps {
   onChange: (page: number) => void;
@@ -21,7 +23,7 @@ const PaginationButton: React.FC<IBProps> = props => {
     <button
       disabled={disabled || active}
       onClick={handleChange}
-      className={`${disabled ? 'disabled' : ''} ${active ? 'active' : ''}`}>
+      className={`${disabled ? s.disabled : ''} ${active ? s.active : ''}`}>
       <span>{num}</span>
     </button>
   );
@@ -34,6 +36,7 @@ export const Pagination: React.FC = () => {
     params.set('page', String(newPage));
     setParams(params);
   };
+  const isDark = useContext(ThemeContext);
 
   const {
     isLoading,
@@ -41,7 +44,7 @@ export const Pagination: React.FC = () => {
   } = useAppSelector(state => state.personsResult);
 
   return (
-    <div className="container" onClick={e => e.stopPropagation()}>
+    <div className={`${s.container} ${isDark ? s.dark : ''}`} onClick={e => e.stopPropagation()}>
       {Array(Math.ceil(count / maxPersonsPerPage))
         .fill('')
         .map((_, index) => {

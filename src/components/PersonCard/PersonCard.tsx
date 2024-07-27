@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, useContext } from 'react';
 import './PersonCard.css';
 import { IResult } from '../../models/api';
 import { NavLink, useSearchParams } from 'react-router-dom';
@@ -6,6 +6,7 @@ import { SEARCH_STRING } from '../../utils/const';
 import { checkboxesSelector } from '../../store/store';
 import { addCheckbox, removeCheckbox } from '../../store/checkboxSlice';
 import { useAppDispatch, useAppSelector } from '../../store/storeHooks';
+import { ThemeContext } from '../../context/context';
 
 interface IProps {
   person: IResult;
@@ -20,6 +21,7 @@ export function PersonCard(props: IProps): ReactNode {
   const dispatch = useAppDispatch();
   const checkboxes = useAppSelector(checkboxesSelector);
   const isChecked = Boolean(checkboxes[personId]);
+  const isDark = useContext(ThemeContext);
 
   function onClick(e: React.SyntheticEvent) {
     e.stopPropagation();
@@ -35,7 +37,7 @@ export function PersonCard(props: IProps): ReactNode {
   };
 
   return (
-    <div className="card">
+    <div className={`${'card'} ${isDark ? 'dark' : ''}`}>
       <label htmlFor="">
         <input type="checkbox" checked={isChecked} onChange={onChange} />
       </label>

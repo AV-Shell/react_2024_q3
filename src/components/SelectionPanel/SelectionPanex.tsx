@@ -1,9 +1,10 @@
-import React, { useCallback, useMemo, useRef } from 'react';
+import React, { useCallback, useContext, useMemo, useRef } from 'react';
 import { removeAllCheckboxes } from '../../store/checkboxSlice';
 import { checkboxesSelector } from '../../store/store';
 import { useAppDispatch, useAppSelector } from '../../store/storeHooks';
 import s from './SelectionPanel.module.css';
 import { convertPersonsToCSV } from '../../utils/converters';
+import { ThemeContext } from '../../context/context';
 
 export const SelectionPanel: React.FC = () => {
   const ref = useRef<HTMLAnchorElement>(null);
@@ -12,6 +13,7 @@ export const SelectionPanel: React.FC = () => {
   const checkboxes = Object.values(checkboxesObj);
   const selectedCount = checkboxes.length;
   const spanText = `${selectedCount} item${selectedCount > 1 ? 's are' : ' is'} selected`;
+  const isDark = useContext(ThemeContext);
   const cachedCsvData = useMemo(
     () => new Blob([convertPersonsToCSV(Object.values(checkboxesObj))], { type: 'text/csv' }),
     [checkboxesObj],
@@ -20,7 +22,7 @@ export const SelectionPanel: React.FC = () => {
   const downloadCSV = useCallback(() => ref.current?.click(), []);
 
   return (
-    <div className={s.container}>
+    <div className={`${s.container} ${isDark ? s.dark : ''}`}>
       <div className={`${s.content} ${s.fixed} ${selectedCount > 0 ? s.visible : ''}`}>
         {selectedCount > 0 && <span>{spanText}</span>}
         <button onClick={() => dispatch(removeAllCheckboxes())}>Unselect all</button>

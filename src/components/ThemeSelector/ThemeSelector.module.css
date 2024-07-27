@@ -1,0 +1,43 @@
+.checkboxWrapper input[type=checkbox] {
+  height: 0;
+  width: 0;
+  visibility: hidden;
+}
+
+.checkboxWrapper label {
+  --size: 50px;
+
+  cursor: pointer;
+  width: var(--size);
+  height: calc(var(--size) / 2);
+
+  background: #bada55;
+  display: block;
+  border-radius: 100px;
+  position: relative;
+}
+
+.checkboxWrapper label:after {
+  content: '';
+  position: absolute;
+  top: 6%;
+  left: 2.5%;
+  width: calc(50% - 5%);
+  height: calc(100% - 11%);
+  background: #fff;
+  border-radius: 90px;
+  transition: 0.3s;
+}
+
+.checkboxWrapper input:checked+label {
+  background: grey;
+}
+
+.checkboxWrapper input:checked+label:after {
+  left: calc(100% - 2.5%);
+  transform: translateX(-100%);
+}
+
+.checkboxWrapper label:active:after {
+  width: 55%;
+}

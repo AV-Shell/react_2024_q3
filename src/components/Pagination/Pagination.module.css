@@ -16,3 +16,17 @@
   background-color: #808080;
   pointer-events: none;
 }
+
+.dark {
+  .active {
+    color: rgb(5, 5, 78);
+    background-color: #00dd93ab;
+  }
+
+  .disabled {
+    color: #ffffff;
+    background-color: #c9c9c9;
+    pointer-events: none;
+  }
+
+}

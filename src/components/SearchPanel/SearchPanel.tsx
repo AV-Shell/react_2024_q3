@@ -1,13 +1,14 @@
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { SEARCH_STRING } from '../../utils/const';
-import './SearchPanel.css';
-import { useSearchParams } from 'react-router-dom';
+import s from './SearchPanel.module.css';
+import { ThemeContext } from '../../context/context';
 
 export const SearchPanel: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [requestString, setRequestString] = useLocalStorage(searchParams.get(SEARCH_STRING) ?? '', SEARCH_STRING);
-  console.log();
+  const isDartTheme = useContext(ThemeContext);
 
   const search = searchParams.get('search') ?? '';
 
@@ -40,7 +41,7 @@ export const SearchPanel: React.FC = () => {
   };
 
   return (
-    <form onSubmit={onSubmit}>
+    <form className={`${s.form} ${isDartTheme ? s.dark : ''}`} onSubmit={onSubmit}>
       <input type="search" name="search" defaultValue={requestString} />
       <button type="submit">Search</button>
     </form>
