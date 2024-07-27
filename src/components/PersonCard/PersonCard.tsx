@@ -5,7 +5,7 @@ import { NavLink, useSearchParams } from 'react-router-dom';
 import { SEARCH_STRING } from '../../utils/const';
 import { checkboxesSelector } from '../../store/store';
 import { addCheckbox, removeCheckbox } from '../../store/checkboxSlice';
-import { useAppDispatch, useAppSelector } from '../../store/storeHoocs';
+import { useAppDispatch, useAppSelector } from '../../store/storeHooks';
 
 interface IProps {
   person: IResult;
