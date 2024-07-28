@@ -30,15 +30,11 @@ export function PersonPage(): ReactNode {
 
   const page = searchParams.get('page');
   const search = searchParams.get(SEARCH_STRING);
+  const navigateTo = `/${page ? `?page=${page}` : ''}${search ? `&${SEARCH_STRING}=${search}` : ''}`;
 
   return (
     <div className={style.rightSide}>
-      <NavLink
-        to={`/${page ? `?page=${page}` : ''}${search ? `&${SEARCH_STRING}=${search}` : ''}`}
-        className={style.close}>
-        Close
-      </NavLink>
-
+      <NavLink to={navigateTo} className={style.close} children={'Close'} />
       {loading && <Loader />}
       {!loading && person && (
         <>

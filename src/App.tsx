@@ -41,7 +41,7 @@ const App: React.FC = () => {
 
   return (
     <ThemeContext.Provider value={isDark}>
-      <div className={`${s.page} ${isDark ? s.dark : ''}`}>
+      <div data-testid="appPage" className={`${s.page} ${isDark ? s.dark : ''}`}>
         <div
           className={s.leftside}
           onClick={() => {

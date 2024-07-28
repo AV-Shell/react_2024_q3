@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useMemo, useRef } from 'react';
 import { removeAllCheckboxes } from '../../store/checkboxSlice';
-import { checkboxesSelector } from '../../store/store';
+import { checkboxesSelector } from '../../store/selectors';
 import { useAppDispatch, useAppSelector } from '../../store/storeHooks';
 import s from './SelectionPanel.module.css';
 import { convertPersonsToCSV } from '../../utils/converters';
@@ -24,7 +24,7 @@ export const SelectionPanel: React.FC = () => {
   return (
     <div className={`${s.container} ${isDark ? s.dark : ''}`}>
       <div className={`${s.content} ${s.fixed} ${selectedCount > 0 ? s.visible : ''}`}>
-        {selectedCount > 0 && <span>{spanText}</span>}
+        <span>{spanText}</span>
         <button onClick={() => dispatch(removeAllCheckboxes())}>Unselect all</button>
         <button onClick={downloadCSV}>Download</button>
         <a
@@ -34,7 +34,7 @@ export const SelectionPanel: React.FC = () => {
         />
       </div>
       <div className={`${s.content} ${s.fake} ${selectedCount > 0 ? s.visible : ''}`}>
-        {selectedCount > 0 && <span>{spanText}</span>}
+        <span>{spanText}</span>
         <button>Unselect all</button>
         <button>Download</button>
       </div>

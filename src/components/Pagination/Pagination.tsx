@@ -4,6 +4,7 @@ import { maxPersonsPerPage } from '../../utils/const';
 import s from './Pagination.module.css';
 import { useContext } from 'react';
 import { ThemeContext } from '../../context/context';
+import { personsResultSelector } from '../../store/selectors';
 
 interface IBProps {
   onChange: (page: number) => void;
@@ -35,16 +36,20 @@ export const Pagination: React.FC = () => {
   const handlePageChange = (newPage: number) => {
     params.set('page', String(newPage));
     setParams(params);
+    console.log(`\n\n\n\n\n\n`, params);
   };
   const isDark = useContext(ThemeContext);
 
   const {
     isLoading,
     persons: { count },
-  } = useAppSelector(state => state.personsResult);
+  } = useAppSelector(personsResultSelector);
 
   return (
-    <div className={`${s.container} ${isDark ? s.dark : ''}`} onClick={e => e.stopPropagation()}>
+    <div
+      data-testid="paginationContainer"
+      className={`${s.container} ${isDark ? s.dark : ''}`}
+      onClick={e => e.stopPropagation()}>
       {Array(Math.ceil(count / maxPersonsPerPage))
         .fill('')
         .map((_, index) => {

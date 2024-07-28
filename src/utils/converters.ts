@@ -21,4 +21,4 @@ export const convertPersonsToCSV = (objArray: IResult[]) => {
   return str;
 };
 
-export const IdFromUrlConverter = (url: string) => url.split('/').slice(-2)[0] ?? 0;
+export const IdFromUrlConverter = (url: string) => url.split('/').slice(-2)[0] || '0';

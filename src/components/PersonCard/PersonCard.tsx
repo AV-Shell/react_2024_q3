@@ -3,7 +3,7 @@ import './PersonCard.css';
 import { IResult } from '../../models/api';
 import { NavLink, useSearchParams } from 'react-router-dom';
 import { SEARCH_STRING } from '../../utils/const';
-import { checkboxesSelector } from '../../store/store';
+import { checkboxesSelector } from '../../store/selectors';
 import { addCheckbox, removeCheckbox } from '../../store/checkboxSlice';
 import { useAppDispatch, useAppSelector } from '../../store/storeHooks';
 import { ThemeContext } from '../../context/context';

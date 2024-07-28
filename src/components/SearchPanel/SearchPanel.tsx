@@ -41,9 +41,11 @@ export const SearchPanel: React.FC = () => {
   };
 
   return (
-    <form className={`${s.form} ${isDartTheme ? s.dark : ''}`} onSubmit={onSubmit}>
-      <input type="search" name="search" defaultValue={requestString} />
-      <button type="submit">Search</button>
+    <form data-testid="searchForm" className={`${s.form} ${isDartTheme ? s.dark : ''}`} onSubmit={onSubmit}>
+      <input data-testid="searchInput" type="search" name="search" defaultValue={requestString} />
+      <button data-testid="searchSubmit" type="submit">
+        Search
+      </button>
     </form>
   );
 };

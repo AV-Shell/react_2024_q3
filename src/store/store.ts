@@ -14,5 +14,3 @@ export const configuredStore = configureStore({
 
 export type AppDispatch = typeof configuredStore.dispatch;
 export type TRootState = ReturnType<typeof configuredStore.getState>;
-
-export const checkboxesSelector = (state: TRootState) => state.checkboxState.checkboxes;

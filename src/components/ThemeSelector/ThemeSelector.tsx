@@ -8,7 +8,7 @@ interface IProps {
 export const ThemeSelector: React.FC<IProps> = ({ handleChange, isChecked }) => {
   return (
     <div className={s.checkboxWrapper}>
-      <input type="checkbox" id="switch" onChange={handleChange} checked={isChecked} />
+      <input data-testid="themeCheckbox" type="checkbox" id="switch" onChange={handleChange} checked={isChecked} />
       <label htmlFor="switch"></label>
     </div>
   );
