@@ -17,7 +17,7 @@ class LocalstorageService {
     if (data !== null) {
       try {
         return JSON.parse(data).value;
-      } catch (e) {
+      } catch (_) {
         return null;
       }
     }

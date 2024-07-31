@@ -20,9 +20,20 @@ export interface IResult {
   url: Link;
 }
 
+export interface IResWithID extends IResult {
+  id: string;
+}
+
 export interface IAPIResp {
   count: number;
   next: string | null;
   previous: string | null;
   results: Array<IResult>;
+}
+
+export interface IAPIRespWithId {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: Array<IResWithID>;
 }
