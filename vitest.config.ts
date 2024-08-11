@@ -14,7 +14,7 @@ export default mergeConfig(
         reporter: ['text', 'html'],
         all: true,
         include: ['src/**/*.{ts,tsx}'],
-        exclude: ['src/__tests__/', 'src/pages/', 'src/**/*.d.ts'],
+        exclude: ['src/__tests__/', 'src/app/', 'src/**/*.d.ts'],
       },
     },
     resolve: {

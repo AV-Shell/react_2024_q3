@@ -7,14 +7,18 @@ import React from 'react';
 const mocks = vi.hoisted(() => {
   return {
     useRouter: vi.fn(),
+    useSearchParams: vi.fn(),
+    usePathname: vi.fn(),
   };
 });
 
-vi.mock('next/router', async () => {
-  const mod = await vi.importActual('next/router');
+vi.mock('next/navigation', async () => {
+  const mod = await vi.importActual('next/navigation');
   return {
     ...mod,
     useRouter: mocks.useRouter,
+    useSearchParams: mocks.useSearchParams,
+    usePathname: mocks.usePathname,
   };
 });
 
@@ -34,6 +38,12 @@ describe('PersonPage', () => {
   test('Should be render', async () => {
     const id = checkbox1.id;
     mocks.useRouter.mockImplementation(() => ({ asPath: `/?personId=${id}&page=${1}&search=${checkbox1.name[0]}` }));
+    mocks.usePathname.mockImplementation(() => '/');
+    mocks.useSearchParams.mockImplementation(() => [
+      ['personId', id],
+      ['page', 1],
+      ['search', checkbox1.name[0]],
+    ]);
 
     vi.mock('../../store/storeHooks', async () => {
       const mod = await vi.importActual('../../store/storeHooks');
@@ -65,6 +75,42 @@ describe('PersonPage', () => {
 
     const closeButton = screen.getByTestId('closeButton');
     expect(closeButton).toBeInTheDocument();
+
+    vi.resetAllMocks();
+  });
+  test('Shouldnt be render without personId', async () => {
+    mocks.useRouter.mockImplementation(() => ({ asPath: `/?page=${1}&search=${checkbox1.name[0]}` }));
+    mocks.usePathname.mockImplementation(() => '/');
+    mocks.useSearchParams.mockImplementation(() => [
+      ['page', 1],
+      ['search', checkbox1.name[0]],
+    ]);
+
+    vi.mock('../../store/storeHooks', async () => {
+      const mod = await vi.importActual('../../store/storeHooks');
+      return {
+        ...mod,
+        useAppDispatch: () => () => {},
+        useAppSelector: () => {},
+      };
+    });
+
+    vi.mock('../../store/swapiApi', async () => {
+      const mod = await vi.importActual('../../store/swapiApi');
+      return {
+        ...mod,
+        useGetPersonByIdQuery: () => ({
+          data: checkbox1,
+          isLoading: false,
+          isFetching: false,
+        }),
+      };
+    });
+
+    render(<PersonPage />);
+
+    const submitButton = screen.queryByText('Close');
+    expect(submitButton).toBeNull();
 
     vi.resetAllMocks();
   });

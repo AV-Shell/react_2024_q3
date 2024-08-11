@@ -31,17 +31,27 @@ describe('PersonCardsList', () => {
     const mocks = vi.hoisted(() => {
       return {
         useRouter: vi.fn(),
+        useSearchParams: vi.fn(),
+        usePathname: vi.fn(),
       };
     });
-    vi.mock('next/router', async () => {
-      const mod = await vi.importActual('next/router');
+    vi.mock('next/navigation', async () => {
+      const mod = await vi.importActual('next/navigation');
       return {
         ...mod,
         useRouter: mocks.useRouter,
+        useSearchParams: mocks.useSearchParams,
+        usePathname: mocks.usePathname,
       };
     });
 
     mocks.useRouter.mockImplementation(() => ({ asPath: `/?personId=1&page=${1}&search=${'d'}` }));
+    mocks.usePathname.mockImplementation(() => '/');
+    mocks.useSearchParams.mockImplementation(() => [
+      ['personId', '1'],
+      ['page', 1],
+      ['search', 'd'],
+    ]);
 
     render(<PersonCardsList results={[checkbox1, checkbox2]} />);
 

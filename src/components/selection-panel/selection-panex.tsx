@@ -1,3 +1,4 @@
+'use client';
 import cn from 'classnames';
 import React, { useCallback, useContext, useMemo, useRef } from 'react';
 import { removeAllCheckboxes } from '@/store/checkboxSlice';

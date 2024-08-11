@@ -40,16 +40,20 @@ describe('PersonsPage', () => {
         useAppSelector: vi.fn(),
         useAppDispatch: vi.fn(),
         useRouter: vi.fn(),
+        useSearchParams: vi.fn(),
+        usePathname: vi.fn(),
         push: vi.fn(),
         Inter: vi.fn(),
       };
     });
 
-    vi.mock('next/router', async () => {
-      const mod = await vi.importActual('next/router');
+    vi.mock('next/navigation', async () => {
+      const mod = await vi.importActual('next/navigation');
       return {
         ...mod,
         useRouter: mocks.useRouter,
+        useSearchParams: mocks.useSearchParams,
+        usePathname: mocks.usePathname,
       };
     });
 
@@ -76,6 +80,12 @@ describe('PersonsPage', () => {
       push: mocks.push,
       route: '/',
     }));
+    mocks.usePathname.mockImplementation(() => '/');
+    mocks.useSearchParams.mockImplementation(() => [
+      ['personId', 1],
+      ['page', 1],
+      ['search', '1'],
+    ]);
     mocks.useAppDispatch.mockImplementation(() => {});
     mocks.useAppSelector.mockImplementation(() => ({ isLoading: true, persons: { count: 0 } }));
 

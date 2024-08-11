@@ -1,3 +1,4 @@
+'use client';
 import { ButtonHTMLAttributes, DetailedHTMLProps, ReactNode, useState } from 'react';
 import s from './error-button.module.css';
 import cn from 'classnames';

@@ -1,3 +1,4 @@
+'use client';
 import cn from 'classnames';
 import { DetailedHTMLProps, HTMLAttributes, useEffect } from 'react';
 import Link from 'next/link';

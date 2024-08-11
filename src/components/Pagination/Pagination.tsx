@@ -1,3 +1,4 @@
+'use client';
 import { useAppSelector } from '../../store/storeHooks';
 import { maxPersonsPerPage } from '../../utils/const';
 import s from './Pagination.module.css';
@@ -5,7 +6,8 @@ import { useContext } from 'react';
 import { personsResultSelector } from '../../store/selectors';
 import { ThemeContext } from '@/context/theme.context';
 import { useQueryParams } from '@/hooks/useQueryParams';
-import { useRouter } from 'next/router';
+import { useRouter, usePathname } from 'next/navigation';
+
 import cn from 'classnames';
 
 interface IBProps {
@@ -35,6 +37,7 @@ const PaginationButton: React.FC<IBProps> = props => {
 export const Pagination: React.FC = () => {
   const searchParams = useQueryParams();
   const router = useRouter();
+  const pathname = usePathname();
   const { isDarkTheme } = useContext(ThemeContext);
   const {
     isLoading,
@@ -47,7 +50,7 @@ export const Pagination: React.FC = () => {
     const params = new URLSearchParams(searchParams);
     params.set('page', `${newPage}`);
     const queryString = params.toString();
-    const updatedPath = `${router.route}?${queryString}`;
+    const updatedPath = `${pathname}?${queryString}`;
     router.push(updatedPath);
   };
 

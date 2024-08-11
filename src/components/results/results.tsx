@@ -1,11 +1,11 @@
+'use client';
 import cn from 'classnames';
 import { omit } from 'lodash';
 import { DetailedHTMLProps, HTMLAttributes, useContext, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter, usePathname } from 'next/navigation';
 import { Loader } from '@/components/loader/loader';
 import { PersonCardsList } from '@/components/person-cards-list/person-cards-list';
 import { SEARCH_STRING } from '@/utils/const';
-// import { SelectionPanel } from '@/components/selectionpanel/selectionpanex';
 import { useGetPersonsQuery } from '@/store/swapiApi';
 import { useAppDispatch } from '@/store/storeHooks';
 import { setIsLoading, setPersons } from '@/store/personsResultsSlice';
@@ -18,6 +18,7 @@ export interface ResultsPageProps extends DetailedHTMLProps<HTMLAttributes<HTMLD
 const ResultsPage: React.FC<ResultsPageProps> = ({ className, ...props }) => {
   const searchParams = useQueryParams();
   const router = useRouter();
+  const pathname = usePathname();
   const { isDarkTheme } = useContext(ThemeContext);
   const dispatch = useAppDispatch();
   const page: number = +(searchParams?.page ?? 1);
@@ -38,7 +39,7 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ className, ...props }) => {
   const closeDetails = () => {
     const params = new URLSearchParams(omit(searchParams, 'personId'));
     const queryString = params.toString();
-    const updatedPath = queryString ? `${router.route}?${queryString}` : router.route;
+    const updatedPath = queryString ? `${pathname}?${queryString}` : pathname;
     router.push(updatedPath);
   };
 

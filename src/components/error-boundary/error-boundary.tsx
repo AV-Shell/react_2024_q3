@@ -1,3 +1,4 @@
+'use client';
 import { ErrorInfo, PureComponent, ReactNode } from 'react';
 import s from './error-boundary.module.css';
 

@@ -1,8 +1,9 @@
+'use client';
 import { useContext, useEffect } from 'react';
 
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { SEARCH_STRING } from '@/utils/const';
-import { useRouter } from 'next/router';
+import { useRouter, usePathname } from 'next/navigation';
 import { useQueryParams } from '@/hooks/useQueryParams';
 import { ThemeSelector } from '@/components/theme-selector/theme-selector';
 import { ThemeContext } from '@/context/theme.context';
@@ -13,6 +14,7 @@ export const SearchPanel: React.FC = () => {
   const searchParams = useQueryParams();
   const { isDarkTheme } = useContext(ThemeContext);
   const router = useRouter();
+  const pathname = usePathname();
   const { search = '' } = searchParams;
 
   const [requestString, setRequestString] = useLocalStorage(search, SEARCH_STRING);
@@ -24,7 +26,7 @@ export const SearchPanel: React.FC = () => {
       params.set('search', requestString);
       params.set('page', '1');
       const queryString = params.toString();
-      const updatedPath = queryString ? `${router.route}?${queryString}` : router.route;
+      const updatedPath = `${pathname}?${queryString}`;
       router.push(updatedPath);
     }
     //this.is to get default priority value from localstorage only on first load
@@ -47,7 +49,7 @@ export const SearchPanel: React.FC = () => {
       params.set('search', inputSearch);
       params.set('page', '1');
       const queryString = params.toString();
-      const updatedPath = queryString ? `${router.route}?${queryString}` : router.route;
+      const updatedPath = `${pathname}?${queryString}`;
       router.push(updatedPath);
     }
   };
@@ -56,13 +58,7 @@ export const SearchPanel: React.FC = () => {
     <>
       <form data-testid="searchForm" className={`${s.form} ${isDarkTheme ? s.dark : ''}`} onSubmit={onSubmit}>
         <ThemeSelector className={s.theme} isChecked={true} handleChange={() => {}} />
-        <input
-          data-testid="searchInput"
-          type="search"
-          name="search"
-          className={s.input}
-          defaultValue={search ?? requestString}
-        />
+        <input data-testid="searchInput" type="search" name="search" className={s.input} defaultValue={search} />
         <button data-testid="searchSubmit" type="submit" className={s.button}>
           Search
         </button>

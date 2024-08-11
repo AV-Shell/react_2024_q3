@@ -1,3 +1,4 @@
+'use client';
 import { useContext } from 'react';
 import cn from 'classnames';
 import { Inter } from 'next/font/google';

@@ -8,6 +8,8 @@ import Link from 'next/link';
 const mocks = vi.hoisted(() => {
   return {
     useRouter: vi.fn(),
+    useSearchParams: vi.fn(),
+    usePathname: vi.fn(),
     spyClick: vi.fn(),
   };
 });
@@ -20,11 +22,13 @@ vi.mock('../../store/storeHooks', async () => {
     useAppSelector: () => ({ 4: true }),
   };
 });
-vi.mock('next/router', async () => {
-  const mod = await vi.importActual('next/router');
+vi.mock('next/navigation', async () => {
+  const mod = await vi.importActual('next/navigation');
   return {
     ...mod,
     useRouter: mocks.useRouter,
+    useSearchParams: mocks.useSearchParams,
+    usePathname: mocks.usePathname,
   };
 });
 vi.mock('next/link', async () => {
@@ -57,6 +61,8 @@ describe('PersonCard', () => {
   });
   test('Should be render1', async () => {
     mocks.useRouter.mockImplementation(() => ({ asPath: `/?data=1` }));
+    mocks.usePathname.mockImplementation(() => '/');
+    mocks.useSearchParams.mockImplementation(() => [['data', '1']]);
 
     render(<PersonCard person={checkbox1} />);
 
@@ -69,6 +75,12 @@ describe('PersonCard', () => {
     const search = 'd';
 
     mocks.useRouter.mockImplementation(() => ({ asPath: `/?personId=1&page=${page}&search=${search}` }));
+    mocks.usePathname.mockImplementation(() => '/');
+    mocks.useSearchParams.mockImplementation(() => [
+      ['personId', '1'],
+      ['page', page],
+      ['search', search],
+    ]);
     render(<PersonCard person={checkbox1} />);
 
     await waitFor(() => screen.getByText(checkbox1.name));

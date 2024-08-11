@@ -6,16 +6,20 @@ const mocks = vi.hoisted(() => {
   return {
     useAppSelector: vi.fn(),
     useRouter: vi.fn(),
+    useSearchParams: vi.fn(),
+    usePathname: vi.fn(),
     push: vi.fn(),
     useContext: vi.fn(),
   };
 });
 
-vi.mock('next/router', async () => {
-  const mod = await vi.importActual('next/router');
+vi.mock('next/navigation', async () => {
+  const mod = await vi.importActual('next/navigation');
   return {
     ...mod,
     useRouter: mocks.useRouter,
+    useSearchParams: mocks.useSearchParams,
+    usePathname: mocks.usePathname,
   };
 });
 
@@ -43,6 +47,12 @@ describe('Pagination', () => {
   test('Should be render without buttons', async () => {
     mocks.useAppSelector.mockImplementation(() => ({ isLoading: true, persons: { count: 0 } }));
     mocks.useRouter.mockImplementation(() => ({ asPath: '/?search=Lusadfsadf&page=1' }));
+    mocks.usePathname.mockImplementation(() => '/');
+    mocks.useSearchParams.mockImplementation(() => [
+      ['search', 'Lusadfsadf'],
+      ['page', '1'],
+    ]);
+
     mocks.useContext.mockImplementation(() => ({ isDarkTheme: false }));
 
     render(<Pagination />);
@@ -56,6 +66,11 @@ describe('Pagination', () => {
   test('Should be render with disabled buttons', async () => {
     mocks.useAppSelector.mockImplementation(() => ({ isLoading: true, persons: { count: 82 } }));
     mocks.useRouter.mockImplementation(() => ({ asPath: '/?search=Lusadfsadf&page=1' }));
+    mocks.usePathname.mockImplementation(() => '/');
+    mocks.useSearchParams.mockImplementation(() => [
+      ['search', 'Lusadfsadf'],
+      ['page', '1'],
+    ]);
     mocks.useContext.mockImplementation(() => ({ isDarkTheme: false }));
 
     render(<Pagination />);
@@ -72,6 +87,11 @@ describe('Pagination', () => {
   test('Should be render with not disabled buttons', async () => {
     mocks.useAppSelector.mockImplementation(() => ({ isLoading: false, persons: { count: 51 } }));
     mocks.useRouter.mockImplementation(() => ({ asPath: '/?search=L&page=1', push: mocks.push, route: '/' }));
+    mocks.usePathname.mockImplementation(() => '/');
+    mocks.useSearchParams.mockImplementation(() => [
+      ['search', 'L'],
+      ['page', '1'],
+    ]);
     mocks.useContext.mockImplementation(() => ({ isDarkTheme: false }));
 
     render(<Pagination />);
@@ -88,6 +108,8 @@ describe('Pagination', () => {
     mocks.useAppSelector.mockImplementation(() => ({ isLoading: false, persons: { count: 51 } }));
     mocks.useContext.mockImplementation(() => ({ isDarkTheme: true }));
     mocks.useRouter.mockImplementation(() => ({ asPath: '/', push: mocks.push, route: '/' }));
+    mocks.usePathname.mockImplementation(() => '/');
+    mocks.useSearchParams.mockImplementation(() => []);
 
     render(<Pagination />);
 

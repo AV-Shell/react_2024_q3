@@ -1,3 +1,4 @@
+'use client';
 /* eslint-disable react-compiler/react-compiler */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react';

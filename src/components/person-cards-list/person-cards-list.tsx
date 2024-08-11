@@ -1,3 +1,4 @@
+'use client';
 import { ReactNode } from 'react';
 import s from './person-cards-list.module.css';
 import { IResWithID } from '@/models/api';

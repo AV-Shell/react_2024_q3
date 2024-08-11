@@ -1,3 +1,4 @@
+'use client';
 import { ReactNode, useContext } from 'react';
 import s from './person-card.module.css';
 import cn from 'classnames';
