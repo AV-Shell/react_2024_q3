@@ -1,80 +1,88 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { afterEach, describe, expect, test, vi } from 'vitest';
-import { PersonCard } from '../../components/PersonCard/PersonCard';
-import { createMemoryRouter, RouterProvider } from 'react-router-dom';
+import { afterAll, describe, expect, test, vi } from 'vitest';
+import { PersonCard } from '../../components/person-card/person-card';
 import { checkbox1 } from '../testdata';
 import React, { ReactNode } from 'react';
+import Link from 'next/link';
+
+const mocks = vi.hoisted(() => {
+  return {
+    useRouter: vi.fn(),
+    spyClick: vi.fn(),
+  };
+});
+
+vi.mock('../../store/storeHooks', async () => {
+  const mod = await vi.importActual('../../store/storeHooks');
+  return {
+    ...mod,
+    useAppDispatch: () => () => {},
+    useAppSelector: () => ({ 4: true }),
+  };
+});
+vi.mock('next/router', async () => {
+  const mod = await vi.importActual('next/router');
+  return {
+    ...mod,
+    useRouter: mocks.useRouter,
+  };
+});
+vi.mock('next/link', async () => {
+  const myNavLink: React.FC<{ href: string; onClick: () => void; children: ReactNode }> = ({
+    href,
+    onClick,
+    children,
+  }) => {
+    console.log(String(onClick) && '');
+
+    return (
+      <div>
+        <span onClick={onClick} className={href} data-testid="navlink">
+          customNavLink
+        </span>
+        <div>{children}</div>
+      </div>
+    );
+  };
+
+  return {
+    __esModule: true,
+    default: myNavLink,
+  };
+});
 
 describe('PersonCard', () => {
-  afterEach(() => {
-    vi.clearAllMocks();
+  afterAll(() => {
+    vi.resetAllMocks();
+  });
+  test('Should be render1', async () => {
+    mocks.useRouter.mockImplementation(() => ({ asPath: `/?data=1` }));
+
+    render(<PersonCard person={checkbox1} />);
+
+    await waitFor(() => screen.getByText(checkbox1.name));
+    expect(screen.getByText(checkbox1.name)).toHaveTextContent(checkbox1.name);
+    vi.resetAllMocks();
   });
   test('Should be render', async () => {
-    const text = 'PersonPage opened';
-    const path = '?page=1&search=d';
+    const page = '1';
+    const search = 'd';
 
-    const routes = [
-      {
-        path: `/`,
-        element: <PersonCard person={checkbox1} />,
-      },
-      {
-        path: '/person/:personId',
-        element: <div>{text}</div>,
-      },
-    ];
-
-    vi.mock('../../store/storeHooks', async () => {
-      const mod = await vi.importActual('../../store/storeHooks');
-      return {
-        ...mod,
-        useAppDispatch: () => () => {},
-        useAppSelector: () => ({ 4: true }),
-      };
-    });
-
-    vi.mock('react-router-dom', async () => {
-      const mod = await vi.importActual('react-router-dom');
-      const myNavLink: React.FC<{ to: string; onClick: () => void; children: ReactNode }> = ({
-        to,
-        onClick,
-        children,
-      }) => {
-        return (
-          <div>
-            <span onClick={onClick} className={to}>
-              customNavLink
-            </span>
-            <div>{children}</div>
-          </div>
-        );
-      };
-
-      return {
-        ...mod,
-        NavLink: myNavLink,
-      };
-    });
-
-    const router = createMemoryRouter(routes, {
-      initialEntries: ['/', `/${path}`],
-      initialIndex: 1,
-    });
-
-    render(<RouterProvider router={router} />);
+    mocks.useRouter.mockImplementation(() => ({ asPath: `/?personId=1&page=${page}&search=${search}` }));
+    render(<PersonCard person={checkbox1} />);
 
     await waitFor(() => screen.getByText(checkbox1.name));
     expect(screen.getByText(checkbox1.name)).toHaveTextContent(checkbox1.name);
     expect(screen.getByText(checkbox1.skin_color)).toHaveTextContent(checkbox1.skin_color);
     expect(screen.getByText(checkbox1.gender)).toHaveTextContent(checkbox1.gender);
 
-    const link = screen.getByText('customNavLink');
+    const link = screen.getByTestId('navlink');
     fireEvent.click(link);
-    expect(link).toHaveAttribute('class', `person/${checkbox1.id}${path}`);
+    expect(link).toHaveAttribute('class', `?personId=${checkbox1.id}&page=${page}&search=${search}`);
     const checkbox = screen.getByRole('checkbox');
     fireEvent.click(checkbox);
-    expect(link).toHaveAttribute('class', `person/${checkbox1.id}${path}`);
-
+    expect(link).toHaveAttribute('class', `?personId=${checkbox1.id}&page=${page}&search=${search}`);
+    console.log(String(Link) && '');
     vi.clearAllMocks();
   });
 });

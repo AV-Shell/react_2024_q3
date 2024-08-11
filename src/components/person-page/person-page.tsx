@@ -31,11 +31,9 @@ const PersonPage: React.FC<ResultsPageProps> = ({ className, ...props }) => {
 
   const navigateTo = `/${page ? `?page=${page}` : ''}${search ? `&${SEARCH_STRING}=${search}` : ''}`;
 
-  console.log(' i am here, i am render');
-
   return (
     <div className={cn(s.rightSide, className)} {...props}>
-      <Link href={navigateTo} className={s.close}>
+      <Link href={navigateTo} className={s.close} data-testid="closeButton">
         Close
       </Link>
       {loading && <Loader />}

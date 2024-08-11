@@ -18,14 +18,14 @@ export function PersonCard(props: IProps): ReactNode {
   const { person } = props;
   const personId: string = person.url.split('/').slice(-2)[0];
   const searchParams = useQueryParams();
-  const { person: searchParamsPerson = '', page = '1', search = '' } = searchParams;
+  const { personId: searchParamsPersonId = '', page = '1', search = '' } = searchParams;
 
   const dispatch = useAppDispatch();
   const checkboxes = useAppSelector(checkboxesSelector);
   const isChecked = Boolean(checkboxes[personId]);
   const { isDarkTheme } = useContext(ThemeContext);
 
-  const isActive = searchParamsPerson === person.id;
+  const isActive = searchParamsPersonId === person.id;
 
   function onClick(e: React.SyntheticEvent) {
     e.stopPropagation();
@@ -46,6 +46,7 @@ export function PersonCard(props: IProps): ReactNode {
         <input type="checkbox" checked={isChecked} onChange={onChange} className={s.input} />
       </label>
       <Link
+        data-testid="navlink"
         onClick={onClick}
         href={`?personId=${personId}${page ? `&page=${page}` : ''}${search ? `&${SEARCH_STRING}=${search}` : ''}`}
         className={cn({ [s.active]: isActive })}>

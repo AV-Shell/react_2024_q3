@@ -1,13 +1,29 @@
 import { afterAll, afterEach, describe, expect, test, vi } from 'vitest';
-import { Pagination } from '../../components/Pagination/Pagination';
+import { Pagination } from '@/components/pagination/pagination';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { createMemoryRouter, RouterProvider } from 'react-router-dom';
-import * as reactRouterDom from 'react-router-dom';
 
 const mocks = vi.hoisted(() => {
   return {
     useAppSelector: vi.fn(),
-    useSearchParams: vi.fn(),
+    useRouter: vi.fn(),
+    push: vi.fn(),
+    useContext: vi.fn(),
+  };
+});
+
+vi.mock('next/router', async () => {
+  const mod = await vi.importActual('next/router');
+  return {
+    ...mod,
+    useRouter: mocks.useRouter,
+  };
+});
+
+vi.mock('react', async () => {
+  const mod = await vi.importActual('react');
+  return {
+    ...mod,
+    useContext: mocks.useContext,
   };
 });
 
@@ -25,21 +41,11 @@ describe('Pagination', () => {
     vi.resetAllMocks();
   });
   test('Should be render without buttons', async () => {
-    const routes = [
-      {
-        path: '/',
-        element: <Pagination />,
-      },
-    ];
-
     mocks.useAppSelector.mockImplementation(() => ({ isLoading: true, persons: { count: 0 } }));
+    mocks.useRouter.mockImplementation(() => ({ asPath: '/?search=Lusadfsadf&page=1' }));
+    mocks.useContext.mockImplementation(() => ({ isDarkTheme: false }));
 
-    const router = createMemoryRouter(routes, {
-      initialEntries: ['/', `/?page=1&search=d`],
-      initialIndex: 1,
-    });
-
-    render(<RouterProvider router={router} />);
+    render(<Pagination />);
 
     await waitFor(() => screen.getByTestId('paginationContainer'));
     const container = screen.getByTestId('paginationContainer');
@@ -48,21 +54,11 @@ describe('Pagination', () => {
     expect(container).toBeEmptyDOMElement();
   });
   test('Should be render with disabled buttons', async () => {
-    const routes = [
-      {
-        path: '/',
-        element: <Pagination />,
-      },
-    ];
-
     mocks.useAppSelector.mockImplementation(() => ({ isLoading: true, persons: { count: 82 } }));
+    mocks.useRouter.mockImplementation(() => ({ asPath: '/?search=Lusadfsadf&page=1' }));
+    mocks.useContext.mockImplementation(() => ({ isDarkTheme: false }));
 
-    const router = createMemoryRouter(routes, {
-      initialEntries: ['/', `/?page=1&search=d`],
-      initialIndex: 1,
-    });
-
-    render(<RouterProvider router={router} />);
+    render(<Pagination />);
 
     await waitFor(() => screen.getAllByRole('button'));
 
@@ -74,33 +70,33 @@ describe('Pagination', () => {
     expect(buttons.length).toBe(9);
   });
   test('Should be render with not disabled buttons', async () => {
-    const setSearchParams = vi.fn();
-    const spyPage = vi.fn();
-
-    setSearchParams.mockImplementation((a: URLSearchParams) => spyPage(a.get('page')));
-    vi.spyOn(reactRouterDom, 'useSearchParams').mockReturnValue([new URLSearchParams('?page=1'), setSearchParams]);
-
     mocks.useAppSelector.mockImplementation(() => ({ isLoading: false, persons: { count: 51 } }));
+    mocks.useRouter.mockImplementation(() => ({ asPath: '/?search=L&page=1', push: mocks.push, route: '/' }));
+    mocks.useContext.mockImplementation(() => ({ isDarkTheme: false }));
 
-    const routes = [
-      {
-        path: '/',
-        element: <Pagination />,
-      },
-    ];
-
-    const router = createMemoryRouter(routes, {
-      initialEntries: ['/', `/?page=1&search=d`],
-      initialIndex: 1,
-    });
-
-    render(<RouterProvider router={router} />);
+    render(<Pagination />);
 
     await waitFor(() => screen.getAllByRole('button'));
 
     const buttons = screen.getAllByRole('button');
     expect(buttons.length).toBe(6);
-    fireEvent.click(buttons[5]);
-    expect(spyPage).toHaveBeenCalledWith('6');
+
+    fireEvent.click(buttons[2]);
+    expect(mocks.push).toHaveBeenCalledWith(`/?search=L&page=3`);
+  });
+  test('Should be render withithout search ang page', async () => {
+    mocks.useAppSelector.mockImplementation(() => ({ isLoading: false, persons: { count: 51 } }));
+    mocks.useContext.mockImplementation(() => ({ isDarkTheme: true }));
+    mocks.useRouter.mockImplementation(() => ({ asPath: '/', push: mocks.push, route: '/' }));
+
+    render(<Pagination />);
+
+    await waitFor(() => screen.getAllByRole('button'));
+
+    const buttons = screen.getAllByRole('button');
+    expect(buttons.length).toBe(6);
+
+    fireEvent.click(buttons[2]);
+    expect(mocks.push).toHaveBeenCalledWith(`/?page=3`);
   });
 });

@@ -22,7 +22,6 @@ describe('useLocalStorage', () => {
     expect(storagedValue).toBe(null);
 
     const { result } = renderHook(() => useLocalStorage<number>(initialCount, key));
-    console.log('result', result);
     const [count, setCount] = result.current;
 
     expect(result.current.length).toBe(2);

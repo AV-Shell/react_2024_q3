@@ -1,9 +1,8 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import { PersonCardsList } from '../../components/PersonCardsList/PersonCardsList';
-import { createMemoryRouter, RouterProvider } from 'react-router-dom';
+import { PersonCardsList } from '../../components/person-cards-list/person-cards-list';
 import { checkbox1, checkbox2 } from '../testdata';
-import React, { ReactNode } from 'react';
+import React from 'react';
 
 describe('PersonCardsList', () => {
   afterEach(() => {
@@ -11,37 +10,15 @@ describe('PersonCardsList', () => {
   });
   test('Should be render without cards', async () => {
     const text = 'No results';
-    const path = '?page=1&search=d';
 
-    const routes = [
-      {
-        path: `/`,
-        element: <PersonCardsList results={[]} />,
-      },
-    ];
-
-    const router = createMemoryRouter(routes, {
-      initialEntries: ['/', `/${path}`],
-      initialIndex: 1,
-    });
-
-    render(<RouterProvider router={router} />);
+    render(<PersonCardsList results={[]} />);
 
     await waitFor(() => screen.getByText(text));
     expect(screen.getByText(text)).toBeInTheDocument();
 
-    vi.clearAllMocks();
+    vi.resetAllMocks();
   });
   test('Should be render with cards', async () => {
-    const path = '?page=1&search=d';
-
-    const routes = [
-      {
-        path: `/`,
-        element: <PersonCardsList results={[checkbox1, checkbox2]} />,
-      },
-    ];
-
     vi.mock('../../store/storeHooks', async () => {
       const mod = await vi.importActual('../../store/storeHooks');
       return {
@@ -51,35 +28,22 @@ describe('PersonCardsList', () => {
       };
     });
 
-    vi.mock('react-router-dom', async () => {
-      const mod = await vi.importActual('react-router-dom');
-      const myNavLink: React.FC<{ to: string; onClick: () => void; children: ReactNode }> = ({
-        to,
-        onClick,
-        children,
-      }) => {
-        return (
-          <div>
-            <span onClick={onClick} className={to}>
-              customNavLink
-            </span>
-            <div>{children}</div>
-          </div>
-        );
+    const mocks = vi.hoisted(() => {
+      return {
+        useRouter: vi.fn(),
       };
-
+    });
+    vi.mock('next/router', async () => {
+      const mod = await vi.importActual('next/router');
       return {
         ...mod,
-        NavLink: myNavLink,
+        useRouter: mocks.useRouter,
       };
     });
 
-    const router = createMemoryRouter(routes, {
-      initialEntries: ['/', `/${path}`],
-      initialIndex: 1,
-    });
+    mocks.useRouter.mockImplementation(() => ({ asPath: `/?personId=1&page=${1}&search=${'d'}` }));
 
-    render(<RouterProvider router={router} />);
+    render(<PersonCardsList results={[checkbox1, checkbox2]} />);
 
     await waitFor(() => screen.getByText(checkbox2.name));
     expect(screen.getByText(checkbox2.name)).toBeInTheDocument();
@@ -87,6 +51,6 @@ describe('PersonCardsList', () => {
     const checkbox = screen.getAllByRole('checkbox');
     checkbox.forEach(c => fireEvent.click(c));
 
-    vi.clearAllMocks();
+    vi.resetAllMocks();
   });
 });

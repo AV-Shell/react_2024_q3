@@ -47,7 +47,7 @@ export const Pagination: React.FC = () => {
     const params = new URLSearchParams(searchParams);
     params.set('page', `${newPage}`);
     const queryString = params.toString();
-    const updatedPath = queryString ? `${router.route}?${queryString}` : router.route;
+    const updatedPath = `${router.route}?${queryString}`;
     router.push(updatedPath);
   };
 

@@ -2,6 +2,7 @@
 
 import { defineConfig, mergeConfig } from 'vite';
 import viteConfig from './vite.config';
+import path from 'path';
 
 export default mergeConfig(
   viteConfig,
@@ -13,6 +14,12 @@ export default mergeConfig(
         reporter: ['text', 'html'],
         all: true,
         include: ['src/**/*.{ts,tsx}'],
+        exclude: ['src/__tests__/', 'src/pages/', 'src/**/*.d.ts'],
+      },
+    },
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, './src'),
       },
     },
   }),

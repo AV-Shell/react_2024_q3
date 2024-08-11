@@ -24,7 +24,7 @@ const PersonsPage: React.FC = () => {
     <>
       <ErrorBoundary>
         <Provider store={configuredStore}>
-          <div className={cn(s.wrapper, inter.className)}>
+          <div className={cn(s.wrapper, inter.className)} data-testid="personsPage">
             <header className={cn(s.header, { [s.dark]: isDarkTheme })}>
               <SearchPanel />
             </header>
