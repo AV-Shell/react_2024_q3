@@ -1,5 +1,5 @@
 import { ErrorInfo, PureComponent, ReactNode } from 'react';
-import './ErrorBoundary.css';
+import s from './error-boundary.module.css';
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -28,9 +28,11 @@ export class ErrorBoundary extends PureComponent<ErrorBoundaryProps, ErrorBounda
 
   render(): ReactNode {
     return this.state.hasError ? (
-      <div className="errorMessageWrapper">
-        <h1>Something went wrong</h1>
-        <button onClick={this.onResetButtonClick}>Reset error</button>
+      <div className={s.errorMessageWrapper}>
+        <h1 className={s.h1}>Something went wrong</h1>
+        <button className={s.button} onClick={this.onResetButtonClick}>
+          Reset error
+        </button>
       </div>
     ) : (
       this.props.children

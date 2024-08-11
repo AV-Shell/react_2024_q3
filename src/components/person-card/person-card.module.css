@@ -5,16 +5,16 @@
 
   gap: 5px;
 
-  label {
+  .label {
     display: inline;
   }
 
-  label+* {
+  .label+* {
     flex: 1 1 1px;
   }
 }
 
-article {
+.article {
   width: 100%;
   padding: 10px;
   border-radius: 10px;
@@ -63,18 +63,18 @@ article {
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
 
-  a:hover {
+  .a:hover {
     color: #535bf2;
   }
 
-  button,
-  input {
+  .button,
+  .input {
     background-color: #1a1a1a;
     color: rgba(255, 255, 255, 0.87);
   }
 
 
-  article {
+  .article {
 
 
     .field {

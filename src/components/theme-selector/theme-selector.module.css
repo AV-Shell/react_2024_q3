@@ -1,3 +1,7 @@
+.checkboxWrapper {
+  display: flex;
+}
+
 .checkboxWrapper input[type=checkbox] {
   height: 0;
   width: 0;
@@ -41,3 +45,4 @@
 .checkboxWrapper label:active:after {
   width: 55%;
 }
+

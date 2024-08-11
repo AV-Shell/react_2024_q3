@@ -1,17 +1,17 @@
 import { ReactNode } from 'react';
-import './PersonCardsList.css';
-import { IResult } from '../../models/api';
-import { PersonCard } from '../PersonCard/PersonCard';
+import s from './person-cards-list.module.css';
+import { IResWithID } from '@/models/api';
+import { PersonCard } from '@/components/person-card/person-card';
 
 interface IProps {
-  results: Array<IResult>;
+  results: Array<IResWithID>;
 }
 
 export function PersonCardsList(props: IProps): ReactNode {
   return (
-    <div className="results">
+    <div className={s.results}>
       {props.results.length ? (
-        props.results.map((x: IResult) => {
+        props.results.map((x: IResWithID) => {
           return <PersonCard person={x} key={x.name} />;
         })
       ) : (
