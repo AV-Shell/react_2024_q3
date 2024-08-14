@@ -1,11 +1,6 @@
 import { afterAll, afterEach, describe, expect, test, vi } from 'vitest';
-import { SearchPanel } from '../../components/SearchPanel/SearchPanel';
+import { SearchPanel } from '../../components/search-panel/search-panel';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-
-import { createMemoryRouter, RouterProvider } from 'react-router-dom';
-import * as reactRouterDom from 'react-router-dom';
-import { storage } from '../../services/localstorage.service';
-import { SEARCH_STRING } from '../../utils/const';
 
 describe('SearchPanel.test', () => {
   afterEach(() => {
@@ -15,41 +10,31 @@ describe('SearchPanel.test', () => {
     vi.resetAllMocks();
   });
   test('Should be search', async () => {
-    const setSearchParams = vi.fn();
-    const spyPage = vi.fn();
-    const spySearch = vi.fn();
-
-    setSearchParams.mockImplementation((aFn: ((a: URLSearchParams) => URLSearchParams) | URLSearchParams) => {
-      let page;
-      if (typeof aFn === 'function') {
-        const params = aFn(new URLSearchParams());
-        page = params.get('page');
-        return spySearch(params.get('search'));
-      } else {
-        page = aFn.get('page');
-      }
-      return spyPage(page);
-    });
-
-    vi.spyOn(reactRouterDom, 'useSearchParams').mockReturnValue([new URLSearchParams('?page=1'), setSearchParams]);
-
-    const routes = [
-      {
-        path: '/',
-        element: <SearchPanel />,
-      },
-    ];
-
-    const router = createMemoryRouter(routes, {
-      initialEntries: ['/', `/?page=1`],
-      initialIndex: 1,
-    });
+    const spyFn = vi.fn();
 
     const testItemValue1 = 'searchStringValue';
     const testItemValue2 = 'searchStringNewValue';
-    storage.setItem(SEARCH_STRING, testItemValue1);
 
-    render(<RouterProvider router={router} />);
+    const mocks = vi.hoisted(() => {
+      return {
+        useRouter: vi.fn(),
+      };
+    });
+    vi.mock('next/router', async () => {
+      const mod = await vi.importActual('next/router');
+      return {
+        ...mod,
+        useRouter: mocks.useRouter,
+      };
+    });
+
+    mocks.useRouter.mockImplementation(() => ({
+      asPath: `/?personId=1&page=${1}&search=${testItemValue1}`,
+      push: spyFn,
+      route: '/',
+    }));
+
+    render(<SearchPanel />);
 
     await waitFor(() => screen.getByTestId('searchInput'));
     const input = screen.getByTestId<HTMLInputElement>('searchInput');
@@ -63,6 +48,6 @@ describe('SearchPanel.test', () => {
     fireEvent.change(input, { target: { value: testItemValue2 } });
     expect(input.value).toBe(testItemValue2);
     fireEvent.submit(form, { target: { search: { value: testItemValue2 } } });
-    expect(spySearch).toHaveBeenCalledWith(testItemValue2);
+    expect(spyFn).toHaveBeenCalledWith(`/?personId=1&page=1&search=${testItemValue2}`);
   });
 });

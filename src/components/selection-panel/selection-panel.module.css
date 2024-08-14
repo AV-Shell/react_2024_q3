@@ -1,0 +1,64 @@
+.content {
+  box-sizing: border-box;
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+
+  padding: 0px 20px;
+  border-radius: 10px;
+
+
+  background-color: chocolate;
+  max-height: 0px;
+  transition: max-height 0.25s linear;
+  transition: padding 0.25s linear;
+
+}
+
+.fixed {
+  overflow: hidden;
+}
+
+
+.fixed {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+}
+
+.visible {
+  max-height: fit-content;
+  padding: 6px 20px;
+}
+
+.spanCount {
+  text-align: right;
+  display: inline-block;
+  min-width: 30px;
+}
+
+.spanText {
+  text-align: left;
+  display: inline-block;
+  min-width: 140px;
+}
+
+
+.dark {
+
+  .content,
+  .fixed {
+    background-color: rgb(46, 26, 12);
+
+    .span {
+      color: rgb(147, 206, 53)
+    }
+
+    .button {
+      background-color: #1a1a1a;
+      color: rgba(255, 255, 255, 0.87);
+    }
+  }
+
+
+}

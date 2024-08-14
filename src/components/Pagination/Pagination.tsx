@@ -1,10 +1,12 @@
-import { useSearchParams } from 'react-router-dom';
 import { useAppSelector } from '../../store/storeHooks';
 import { maxPersonsPerPage } from '../../utils/const';
 import s from './Pagination.module.css';
 import { useContext } from 'react';
-import { ThemeContext } from '../../context/context';
 import { personsResultSelector } from '../../store/selectors';
+import { ThemeContext } from '@/context/theme.context';
+import { useQueryParams } from '@/hooks/useQueryParams';
+import { useRouter } from 'next/router';
+import cn from 'classnames';
 
 interface IBProps {
   onChange: (page: number) => void;
@@ -24,31 +26,35 @@ const PaginationButton: React.FC<IBProps> = props => {
     <button
       disabled={disabled || active}
       onClick={handleChange}
-      className={`${disabled ? s.disabled : ''} ${active ? s.active : ''}`}>
+      className={cn({ [s.disabled]: disabled, [s.active]: active })}>
       <span>{num}</span>
     </button>
   );
 };
 
 export const Pagination: React.FC = () => {
-  const [params, setParams] = useSearchParams();
-  const currentPage: number = +(params.get('page') ?? 1);
-  const handlePageChange = (newPage: number) => {
-    params.set('page', String(newPage));
-    setParams(params);
-    console.log(`\n\n\n\n\n\n`, params);
-  };
-  const isDark = useContext(ThemeContext);
-
+  const searchParams = useQueryParams();
+  const router = useRouter();
+  const { isDarkTheme } = useContext(ThemeContext);
   const {
     isLoading,
     persons: { count },
   } = useAppSelector(personsResultSelector);
+  const { page = 1 } = searchParams;
+  const currentPage: number = +page;
+
+  const handlePageChange = (newPage: number) => {
+    const params = new URLSearchParams(searchParams);
+    params.set('page', `${newPage}`);
+    const queryString = params.toString();
+    const updatedPath = `${router.route}?${queryString}`;
+    router.push(updatedPath);
+  };
 
   return (
     <div
       data-testid="paginationContainer"
-      className={`${s.container} ${isDark ? s.dark : ''}`}
+      className={`${s.container} ${isDarkTheme ? s.dark : ''}`}
       onClick={e => e.stopPropagation()}>
       {Array(Math.ceil(count / maxPersonsPerPage))
         .fill('')

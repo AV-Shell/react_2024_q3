@@ -1,10 +1,10 @@
 import { ReactNode } from 'react';
-import './Loader.css';
+import s from './loader.module.css';
 
 export function Loader(): ReactNode {
   return (
-    <div className="loader-wrapper">
-      <div className="loader"></div>
+    <div className={s.loaderWrapper}>
+      <div className={s.loader}></div>
     </div>
   );
 }
