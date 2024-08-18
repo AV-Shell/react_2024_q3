@@ -1,18 +1,31 @@
-import { ReactNode } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import style from './MainPage.module.css';
 import { NavLink } from 'react-router-dom';
 import { formsSelector } from '../../store/selectors';
 import { useAppSelector } from '../../store/storeHooks';
 import classNames from 'classnames';
+import { newFromMilliseconds, showNewFromMilliseconds } from '../../utils/const';
 
 export function MainPage(): ReactNode {
   const formsList = useAppSelector(formsSelector);
+  const lastElementData = +new Date(formsList.length ? formsList[formsList.length - 1].createdAt : 0);
+  const currentData = Date.now();
+  const [showShadow, setShowShadow] = useState<boolean>(currentData - lastElementData < newFromMilliseconds);
+  useEffect(() => {
+    if (showShadow) {
+      setTimeout(() => {
+        setShowShadow(false);
+      }, showNewFromMilliseconds);
+    }
+    // eslint-disable-next-line react-compiler/react-compiler
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const formsData = [];
   for (let i = formsList.length - 1; i >= 0; i--) {
     const formData = formsList[i];
     formsData.push(
-      <div className={classNames(style.form, { [style.last]: i === formsList.length - 1 })}>
+      <div className={classNames(style.form, { [style.last]: i === formsList.length - 1 && showShadow })}>
         <div className={style.imgContainer}>
           <img src={`data:image/jpeg;base64,${formData.pictureFile}`} />
         </div>

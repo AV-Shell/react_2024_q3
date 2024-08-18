@@ -2,20 +2,23 @@ import * as yup from 'yup';
 import { FileSizeB } from './const';
 
 export const formSchema = yup.object().shape({
-  name: yup.string().required('Enter your name!'),
+  name: yup
+    .string()
+    .required('Enter your name!')
+    .matches(/^[\p{Lu}]/u, 'Need first uppercased letter'),
   age: yup.number().typeError('Enter your age').min(0, 'Enter valid age').required('Enter your age'),
   email: yup.string().email('Enter valid email!').required('Enter your email!'),
   password: yup
     .string()
     .required('Enter your password')
     .matches(/([0-9])/, 'Must Contain One number ')
-    .matches(/([A-Z])/, 'Must Contain One Uppercase ')
-    .matches(/([a-z])/, 'Must Contain One lowercase ')
-    .matches(/([^A-Za-z0-9])/, 'Must Contain one special character ')
-    .required('Set this checkbox'),
+    .matches(/([\p{Lu}])/u, 'Must Contain One Uppercase ')
+    .matches(/([\p{Ll}])/u, 'Must Contain One lowercase ')
+    .matches(/([^\p{L}0-9])/u, 'Must Contain one special character ')
+    .required('Set password'),
   confirmPassword: yup
     .string()
-    .required('Set this checkbox')
+    .required('Confirm password')
     .oneOf([yup.ref('password')], 'Passwords must match'),
   gender: yup.string().oneOf(['male', 'female'], 'Choose one').required('Choose one'),
   ataca: yup.bool().oneOf([true], 'Set this checkbox').required('Set this checkbox'),

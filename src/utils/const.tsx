@@ -245,3 +245,17 @@ export const COUNTRYLIST = [
   'Zambia',
   'Zimbabwe',
 ];
+export const defaultFormErrors = {
+  name: '',
+  age: '',
+  email: '',
+  password: '',
+  confirmPassword: '',
+  gender: '',
+  ataca: '',
+  picture: '',
+  country: '',
+};
+export const newFormSeconds = 10;
+export const newFromMilliseconds = newFormSeconds * 1000;
+export const showNewFromMilliseconds = 5 * 1000;

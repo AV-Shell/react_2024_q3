@@ -42,28 +42,28 @@ export function ControlledFormPage(): ReactNode {
 
     try {
       await convert;
+      const base64String = String(reader.result).replace('data:', '').replace(/^.+,/, '');
+
+      const { age, ataca, confirmPassword, email, gender, name, password, country } = data;
+      dispatch(
+        setForms({
+          age,
+          ataca,
+          confirmPassword,
+          email,
+          gender,
+          name,
+          password,
+          country,
+          pictureFile: base64String,
+          createdAt: new Date().toISOString(),
+        }),
+      );
+      reset();
+      navigate('/');
     } catch (error) {
       console.log(error);
     }
-    const base64String = String(reader.result).replace('data:', '').replace(/^.+,/, '');
-
-    const { age, ataca, confirmPassword, email, gender, name, password, country } = data;
-    dispatch(
-      setForms({
-        age,
-        ataca,
-        confirmPassword,
-        email,
-        gender,
-        name,
-        password,
-        country,
-        pictureFile: base64String,
-        createdAt: new Date().toISOString(),
-      }),
-    );
-    reset();
-    navigate('/');
   };
 
   return (
