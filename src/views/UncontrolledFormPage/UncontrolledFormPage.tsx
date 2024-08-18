@@ -113,49 +113,6 @@ export function UncontrolledFormPage(): ReactNode {
           setFormError(validationErrors?.message ?? 'Something went wrong');
         }
       });
-    /*
-    console.log(data);
-    const file = data.picture[0];
-
-    const reader = new FileReader();
-
-    const convert = new Promise((res, rej) => {
-      reader.onloadend = () => {
-        res(null);
-      };
-      reader.onerror = () => {
-        rej();
-      };
-    });
-
-    reader.readAsDataURL(file);
-
-    try {
-      await convert;
-    } catch (error) {
-      console.log(error);
-    }
-    const base64String = String(reader.result).replace('data:', '').replace(/^.+,/, '');
-
-    const { age, ataca, confirmPassword, email, gender, name, password, country } = data;
-    dispatch(
-      setForms({
-        age,
-        ataca,
-        confirmPassword,
-        email,
-        gender,
-        name,
-        password,
-        country,
-        pictureFile: base64String,
-        createdAt: new Date().toISOString(),
-      }),
-    );
-    reset();
-    navigate('/');
-
-    */
   };
 
   return (
