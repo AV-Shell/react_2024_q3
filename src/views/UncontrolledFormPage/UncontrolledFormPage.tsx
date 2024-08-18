@@ -20,9 +20,6 @@ export function UncontrolledFormPage(): ReactNode {
   const onSubmit = async (event: SyntheticEvent<HTMLFormElement, SubmitEvent>) => {
     event.preventDefault();
 
-    console.log(event);
-    console.log('submit!');
-
     const target = event.target as typeof event.target & {
       name: { value: string };
       age: { value: number };
@@ -34,8 +31,6 @@ export function UncontrolledFormPage(): ReactNode {
       country: { value: string };
       picture: { files: FileList };
     };
-
-    console.log('target', { target });
 
     const data: FormValues = {
       name: target.name.value,
@@ -49,12 +44,9 @@ export function UncontrolledFormPage(): ReactNode {
       country: target.country.value,
     };
 
-    console.log(data);
-
     formSchema
       .validate(data, { abortEarly: false, context: { countriesList } })
       .then(async formData => {
-        console.log('valid', formData);
         setFormError('');
         setErrors({ ...defaultFormErrors });
         const file = formData.picture[0];
@@ -107,7 +99,6 @@ export function UncontrolledFormPage(): ReactNode {
             },
             {},
           );
-          console.log(validateErrors);
           setErrors({ ...defaultFormErrors, ...validateErrors });
         } else {
           setFormError(validationErrors?.message ?? 'Something went wrong');

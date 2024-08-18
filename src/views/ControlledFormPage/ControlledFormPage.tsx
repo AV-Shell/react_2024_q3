@@ -23,8 +23,6 @@ export function ControlledFormPage(): ReactNode {
   });
 
   const onSubmit: SubmitHandler<FormValues> = async (data: FormValues) => {
-    console.log('submit!');
-    console.log(data);
     const file = data.picture[0];
 
     const reader = new FileReader();
