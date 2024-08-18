@@ -1,18 +1,9 @@
-import { IAPIRespWithId, IResult, IResWithID } from '../models/api';
+import { FormStateValues } from '../models/form';
 
-export interface ICheckbox extends IResult {
-  id: string;
-}
-
-export type TCheckboxesState = {
-  checkboxes: {
-    [key: string]: ICheckbox;
-  };
+export type TCountries = {
+  countries: Array<string>;
 };
 
-export type TPersonsState = {
-  persons: IAPIRespWithId;
-  personDetails: IResWithID | null;
-  isLoading: boolean;
-  isLoadingDetails: boolean;
+export type TFormsState = {
+  forms: FormStateValues[];
 };

@@ -3,24 +3,28 @@ import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import './index.css';
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary.tsx';
-import { PersonPage, PersonPageLoader } from './views/PersonPage/PersonPage.tsx';
 import { NotFoundPage } from './views/404Page/404page.tsx';
 import { Provider } from 'react-redux';
 import { configuredStore } from './store/store.ts';
-import { App } from './App.tsx';
+import { MainPage } from './views/MainPage/MainPage.tsx';
+import { ControlledFormPage } from './views/ControlledFormPage/ControlledFormPage';
+import { UncontrolledFormPage } from './views/UncontrolledFormPage/UncontrolledFormPage';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <App />,
+    element: <MainPage />,
     errorElement: <NotFoundPage />,
-    children: [
-      {
-        path: 'person/:personId',
-        element: <PersonPage />,
-        loader: PersonPageLoader,
-      },
-    ],
+  },
+  {
+    path: '/controlled',
+    element: <ControlledFormPage />,
+    errorElement: <NotFoundPage />,
+  },
+  {
+    path: '/uncontrolled',
+    element: <UncontrolledFormPage />,
+    errorElement: <NotFoundPage />,
   },
 ]);
 
