@@ -1,0 +1,79 @@
+.link {
+  margin: 10px;
+  padding: 20px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  min-width: 200px;
+
+  &:hover {
+    background-color: rgb(210, 255, 240);
+  }
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 20px;
+
+  input {
+    margin-bottom: 20px;
+    ;
+  }
+}
+
+
+
+.radioContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+
+  .radioTag {
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    gap: 3px;
+    padding: 5px;
+  }
+
+}
+
+.errorMessage {
+  color: red;
+  font-size: 14px;
+}
+
+.checkboxLabel {
+  display: flex;
+  justify-content: flex-start;
+  align-items: baseline;
+  padding: 10px 10px 0px 0px;
+  margin-bottom: 0px;
+  gap: 5px 8px;
+  flex-wrap: wrap;
+
+  input {
+    margin: 0px;
+  }
+}
+
+.checkboxContainer {
+  display: flex;
+  justify-content: flex-start;
+  align-items: baseline;
+  gap: 10px
+}
+
+.datalist {
+  height: 5.1em;
+  overflow: scroll;
+}
+
+.genderFieldset {
+  width: 200px;
+}
